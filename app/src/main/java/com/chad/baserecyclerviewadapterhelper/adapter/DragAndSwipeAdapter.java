@@ -2,17 +2,18 @@ package com.chad.baserecyclerviewadapterhelper.adapter;
 
 import com.chad.baserecyclerviewadapterhelper.R;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.module.DraggableModule;
+import com.chad.library.adapter.base.module.BaseDraggableModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class DragAndSwipeAdapter extends BaseQuickAdapter<String, BaseViewHolder> implements DraggableModule {
+public class DragAndSwipeAdapter extends BaseQuickAdapter<String, BaseViewHolder>  {
 
     public DragAndSwipeAdapter(List<String> data) {
         super(R.layout.item_draggable_view, data);
+        setDraggableModule(new BaseDraggableModule(this));
     }
 
     @Override

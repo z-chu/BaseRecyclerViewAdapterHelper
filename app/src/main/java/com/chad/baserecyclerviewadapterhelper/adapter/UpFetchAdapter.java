@@ -3,7 +3,7 @@ package com.chad.baserecyclerviewadapterhelper.adapter;
 import com.chad.baserecyclerviewadapterhelper.R;
 import com.chad.baserecyclerviewadapterhelper.entity.Movie;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.module.UpFetchModule;
+import com.chad.library.adapter.base.module.BaseUpFetchModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 
 import org.jetbrains.annotations.NotNull;
@@ -13,10 +13,11 @@ import org.jetbrains.annotations.NotNull;
  * @date: 2019-12-06
  * @Description:
  */
-public class UpFetchAdapter extends BaseQuickAdapter<Movie, BaseViewHolder> implements UpFetchModule {
+public class UpFetchAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>  {
 
     public UpFetchAdapter() {
         super(R.layout.item_header_and_footer);
+        setUpFetchModule(new BaseUpFetchModule(this));
     }
 
     @Override

@@ -11,8 +11,8 @@ import com.chad.baserecyclerviewadapterhelper.entity.Status;
 import com.chad.baserecyclerviewadapterhelper.utils.SpannableStringUtils;
 import com.chad.baserecyclerviewadapterhelper.utils.Tips;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.module.BaseLoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
-import com.chad.library.adapter.base.module.LoadMoreModule;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,10 +22,11 @@ import org.jetbrains.annotations.Nullable;
  * @date: 2019-12-04
  * @Description:
  */
-public class LoadMoreAdapter extends BaseQuickAdapter<Status, BaseViewHolder> implements LoadMoreModule {
+public class LoadMoreAdapter extends BaseQuickAdapter<Status, BaseViewHolder>   {
 
     public LoadMoreAdapter() {
         super(R.layout.layout_animation);
+        setLoadMoreModule(new BaseLoadMoreModule(this));
     }
 
     @Override
