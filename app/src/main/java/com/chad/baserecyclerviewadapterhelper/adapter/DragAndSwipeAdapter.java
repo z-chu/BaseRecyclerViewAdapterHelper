@@ -13,7 +13,7 @@ public class DragAndSwipeAdapter extends BaseQuickAdapter<String, BaseViewHolder
 
     public DragAndSwipeAdapter(List<String> data) {
         super(R.layout.item_draggable_view, data);
-        setDraggableModule(new BaseDraggableModule(this));
+        setupDefDraggableModule();
     }
 
     @Override

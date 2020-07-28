@@ -26,7 +26,7 @@ public class LoadMoreAdapter extends BaseQuickAdapter<Status, BaseViewHolder>   
 
     public LoadMoreAdapter() {
         super(R.layout.layout_animation);
-        setLoadMoreModule(new BaseLoadMoreModule(this));
+       setupDefLoadMoreModule();
     }
 
     @Override

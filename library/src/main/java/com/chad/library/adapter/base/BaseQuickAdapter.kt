@@ -1371,7 +1371,7 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
         loadMoreModule= BaseLoadMoreModule(this)
     }
 
-    fun setupUpFetchModule(){
+    fun setupDefUpFetchModule(){
         upFetchModule= BaseUpFetchModule(this)
     }
 

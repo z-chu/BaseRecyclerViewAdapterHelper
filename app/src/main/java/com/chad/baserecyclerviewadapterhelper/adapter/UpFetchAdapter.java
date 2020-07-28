@@ -17,7 +17,7 @@ public class UpFetchAdapter extends BaseQuickAdapter<Movie, BaseViewHolder>  {
 
     public UpFetchAdapter() {
         super(R.layout.item_header_and_footer);
-        setUpFetchModule(new BaseUpFetchModule(this));
+        setupDefUpFetchModule();
     }
 
     @Override
