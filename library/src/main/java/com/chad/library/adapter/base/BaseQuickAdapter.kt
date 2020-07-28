@@ -34,37 +34,6 @@ import java.lang.reflect.ParameterizedType
 import java.util.*
 import kotlin.collections.ArrayList
 
-/**
- * 获取模块
- */
-private interface BaseQuickAdapterModuleImp {
-    /**
-     * 重写此方法，返回自定义模块
-     * @param baseQuickAdapter BaseQuickAdapter<*, *>
-     * @return BaseLoadMoreModule
-     */
-    fun addLoadMoreModule(baseQuickAdapter: BaseQuickAdapter<*, *>): BaseLoadMoreModule {
-        return BaseLoadMoreModule(baseQuickAdapter)
-    }
-
-    /**
-     * 重写此方法，返回自定义模块
-     * @param baseQuickAdapter BaseQuickAdapter<*, *>
-     * @return BaseUpFetchModule
-     */
-    fun addUpFetchModule(baseQuickAdapter: BaseQuickAdapter<*, *>): BaseUpFetchModule {
-        return BaseUpFetchModule(baseQuickAdapter)
-    }
-
-    /**
-     * 重写此方法，返回自定义模块
-     * @param baseQuickAdapter BaseQuickAdapter<*, *>
-     * @return BaseExpandableModule
-     */
-    fun addDraggableModule(baseQuickAdapter: BaseQuickAdapter<*, *>): BaseDraggableModule {
-        return BaseDraggableModule(baseQuickAdapter)
-    }
-}
 
 /**
  * Base Class
@@ -75,7 +44,7 @@ private interface BaseQuickAdapterModuleImp {
 abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
 @JvmOverloads constructor(@LayoutRes private val layoutResId: Int,
                           data: MutableList<T>? = null)
-    : RecyclerView.Adapter<VH>(), BaseQuickAdapterModuleImp, BaseListenerImp {
+    : RecyclerView.Adapter<VH>(), BaseListenerImp {
 
     companion object {
         const val HEADER_VIEW = 0x10000111
@@ -153,6 +122,11 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
             check(!this::context.isInitialized) {
                 "Please set it before onAttachedToRecyclerView()"
             }
+            if(value!=null) {
+                check(value.baseQuickAdapter == this){
+                    "baseQuickAdapter error, only the current baseQuickAdapter"
+                }
+            }
             field = value
         }
 
@@ -165,6 +139,11 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
             check(!this::context.isInitialized) {
                 "Please set it before onAttachedToRecyclerView()"
             }
+            if(value!=null) {
+                check(value.baseQuickAdapter == this){
+                    "baseQuickAdapter error, only the current baseQuickAdapter"
+                }
+            }
             field = value
         }
 
@@ -175,6 +154,11 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
         set(value) {
             check(!this::context.isInitialized) {
                 "Please set it before onAttachedToRecyclerView()"
+            }
+            if(value!=null) {
+                check(value.baseQuickAdapter == this){
+                    "baseQuickAdapter error, only the current baseQuickAdapter"
+                }
             }
             field = value
         }
@@ -1382,4 +1366,17 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
     fun getOnItemChildClickListener(): OnItemChildClickListener? = mOnItemChildClickListener
 
     fun getOnItemChildLongClickListener(): OnItemChildLongClickListener? = mOnItemChildLongClickListener
+
+    fun setupDefLoadMoreModule(){
+        loadMoreModule= BaseLoadMoreModule(this)
+    }
+
+    fun setupUpFetchModule(){
+        upFetchModule= BaseUpFetchModule(this)
+    }
+
+    fun setupDefDraggableModule(){
+        draggableModule= BaseDraggableModule(this)
+    }
+
 }

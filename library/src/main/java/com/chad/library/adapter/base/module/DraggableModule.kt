@@ -26,7 +26,7 @@ import java.util.*
  * 需要【拖拽】功能的，[BaseQuickAdapter]继承此接口
  */
 
-open class BaseDraggableModule(private val baseQuickAdapter: BaseQuickAdapter<*, *>) : DraggableListenerImp {
+open class BaseDraggableModule(internal val baseQuickAdapter: BaseQuickAdapter<*, *>) : DraggableListenerImp {
 
     var isDragEnabled = false
     var isSwipeEnabled = false
