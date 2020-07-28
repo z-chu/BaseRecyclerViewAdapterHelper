@@ -129,32 +129,6 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
             field = value
         }
 
-    /**
-     * 加载更多模块
-     */
-    val loadMoreModule: BaseLoadMoreModule
-        get() {
-            checkNotNull(mLoadMoreModule) { "Please first implements LoadMoreModule" }
-            return mLoadMoreModule!!
-        }
-
-    /**
-     * 向上加载模块
-     */
-    val upFetchModule: BaseUpFetchModule
-        get() {
-            checkNotNull(mUpFetchModule) { "Please first implements UpFetchModule" }
-            return mUpFetchModule!!
-        }
-
-    /**
-     * 拖拽模块
-     */
-    val draggableModule: BaseDraggableModule
-        get() {
-            checkNotNull(mDraggableModule) { "Please first implements DraggableModule" }
-            return mDraggableModule!!
-        }
 
     /********************************* Private property *****************************************/
     private var mDiffHelper: BrvahAsyncDiffer<T>? = null
@@ -170,9 +144,41 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
     private var mOnItemChildClickListener: OnItemChildClickListener? = null
     private var mOnItemChildLongClickListener: OnItemChildLongClickListener? = null
-    private var mUpFetchModule: BaseUpFetchModule? = null
-    private var mDraggableModule: BaseDraggableModule? = null
-    internal var mLoadMoreModule: BaseLoadMoreModule? = null
+
+    /**
+     * 加载更多模块
+     */
+    var upFetchModule: BaseUpFetchModule? = null
+        set(value) {
+            check(!this::context.isInitialized) {
+                "Please set it before onAttachedToRecyclerView()"
+            }
+            field = value
+        }
+
+
+    /**
+     * 向上加载模块
+     */
+    var draggableModule: BaseDraggableModule? = null
+        set(value) {
+            check(!this::context.isInitialized) {
+                "Please set it before onAttachedToRecyclerView()"
+            }
+            field = value
+        }
+
+    /**
+     * 拖拽模块
+     */
+    var loadMoreModule: BaseLoadMoreModule? = null
+        set(value) {
+            check(!this::context.isInitialized) {
+                "Please set it before onAttachedToRecyclerView()"
+            }
+            field = value
+        }
+
 
     protected lateinit var context: Context
         private set
@@ -195,24 +201,6 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
 
     /******************************* RecyclerView Method ****************************************/
 
-    init {
-        checkModule()
-    }
-
-    /**
-     * 检查模块
-     */
-    private fun checkModule() {
-        if (this is LoadMoreModule) {
-            mLoadMoreModule = this.addLoadMoreModule(this)
-        }
-        if (this is UpFetchModule) {
-            mUpFetchModule = this.addUpFetchModule(this)
-        }
-        if (this is DraggableModule) {
-            mDraggableModule = this.addDraggableModule(this)
-        }
-    }
 
     /**
      * Implement this method and use the helper to adapt the view to the given item.
@@ -242,9 +230,9 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
         val baseViewHolder: VH
         when (viewType) {
             LOAD_MORE_VIEW -> {
-                val view = mLoadMoreModule!!.loadMoreView.getRootView(parent)
+                val view = loadMoreModule!!.loadMoreView.getRootView(parent)
                 baseViewHolder = createBaseViewHolder(view)
-                mLoadMoreModule!!.setupViewHolder(baseViewHolder)
+                loadMoreModule!!.setupViewHolder(baseViewHolder)
             }
             HEADER_VIEW -> {
                 val headerLayoutVp: ViewParent? = mHeaderLayout.parent
@@ -273,7 +261,7 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
             else -> {
                 val viewHolder = onCreateDefViewHolder(parent, viewType)
                 bindViewClickListener(viewHolder, viewType)
-                mDraggableModule?.initView(viewHolder)
+                draggableModule?.initView(viewHolder)
                 onItemViewHolderCreated(viewHolder, viewType)
                 baseViewHolder = viewHolder
             }
@@ -298,7 +286,7 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
             }
             return count
         } else {
-            val loadMoreCount = if (mLoadMoreModule?.hasLoadMoreView() == true) {
+            val loadMoreCount = if (loadMoreModule?.hasLoadMoreView() == true) {
                 1
             } else {
                 0
@@ -363,12 +351,12 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         //Add up fetch logic, almost like load more, but simpler.
-        mUpFetchModule?.autoUpFetch(position)
+        upFetchModule?.autoUpFetch(position)
         //Do not move position, need to change before LoadMoreView binding
-        mLoadMoreModule?.autoLoadMore(position)
+        loadMoreModule?.autoLoadMore(position)
         when (holder.itemViewType) {
             LOAD_MORE_VIEW -> {
-                mLoadMoreModule?.let {
+                loadMoreModule?.let {
                     it.loadMoreView.convert(holder, position, it.loadMoreStatus)
                 }
             }
@@ -383,12 +371,12 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
             return
         }
         //Add up fetch logic, almost like load more, but simpler.
-        mUpFetchModule?.autoUpFetch(position)
+        upFetchModule?.autoUpFetch(position)
         //Do not move position, need to change before LoadMoreView binding
-        mLoadMoreModule?.autoLoadMore(position)
+        loadMoreModule?.autoLoadMore(position)
         when (holder.itemViewType) {
             LOAD_MORE_VIEW -> {
-                mLoadMoreModule?.let {
+                loadMoreModule?.let {
                     it.loadMoreView.convert(holder, position, it.loadMoreStatus)
                 }
             }
@@ -424,7 +412,7 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
         mRecyclerView = recyclerView
 
         this.context = recyclerView.context
-        mDraggableModule?.attachToRecyclerView(recyclerView)
+        draggableModule?.attachToRecyclerView(recyclerView)
 
         val manager = recyclerView.layoutManager
         if (manager is GridLayoutManager) {
@@ -1153,10 +1141,10 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
         }
 
         this.data = list ?: arrayListOf()
-        mLoadMoreModule?.reset()
+        loadMoreModule?.reset()
         mLastPosition = -1
         notifyDataSetChanged()
-        mLoadMoreModule?.checkDisableLoadMoreIfNotFullPage()
+        loadMoreModule?.checkDisableLoadMoreIfNotFullPage()
     }
 
     /**
@@ -1192,10 +1180,10 @@ abstract class BaseQuickAdapter<T, VH : BaseViewHolder>
                 this.data.clear()
             }
         }
-        mLoadMoreModule?.reset()
+        loadMoreModule?.reset()
         mLastPosition = -1
         notifyDataSetChanged()
-        mLoadMoreModule?.checkDisableLoadMoreIfNotFullPage()
+        loadMoreModule?.checkDisableLoadMoreIfNotFullPage()
     }
 
     /**

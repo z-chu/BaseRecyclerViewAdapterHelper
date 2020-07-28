@@ -25,7 +25,6 @@ import java.util.*
 /**
  * 需要【拖拽】功能的，[BaseQuickAdapter]继承此接口
  */
-interface DraggableModule
 
 open class BaseDraggableModule(private val baseQuickAdapter: BaseQuickAdapter<*, *>) : DraggableListenerImp {
 

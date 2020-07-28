@@ -20,7 +20,6 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 /**
  * 需要【向下加载更多】功能的，[BaseQuickAdapter]继承此接口
  */
-interface LoadMoreModule
 
 object LoadMoreModuleConfig {
 
